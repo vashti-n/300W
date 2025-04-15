@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instacart - Find Your Food</title>
+  <style>
+    :root {
+      --kale: #00783e;
+      --turmeric: #f4c20d;
+      --guava: #ff6f61;
+      --cashew: #f9f7f4;
+      --carrot: #fa7e23;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--cashew);
+      color: var(--kale);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background-color: var(--kale);
+      color: white;
+      padding: 2rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    main {
+      padding: 3rem 1rem;
+    }
+
+    h2 {
+      color: var(--carrot);
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      width: 260px;
+      border: 2px solid var(--kale);
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin-left: 10px;
+      background-color: var(--turmeric);
+      border: none;
+      color: var(--kale);
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background-color: var(--guava);
+      color: white;
+    }
+
+    #output {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 1rem;
+      background-color: var(--kale);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Instacart</h1>
+    <p>Find and order the groceries you love</p>
+  </header>
+
+  <main>
+    <h2>What food item would you like us to purchase?</h2>
+    <form id="foodForm">
+      <input type="text" id="foodInput" name="food" placeholder="e.g., Strawberries" required />
+      <button type="submit">Search</button>
+    </form>
+    <p id="output"></p>
+  </main>
+
+  <footer>
+    &copy; 2025 Instacart. All rights reserved.
+  </footer>
+
+  <script>
+  const form = document.getElementById('foodForm');
+  const output = document.getElementById('output');
+
+  form.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const food = document.getElementById('foodInput').value.trim();
+
+    if (!food) {
+      output.textContent = "Please enter a food item.";
+      return;
+    }
+
+    output.textContent = `Searching for "${food}" in your local store...`;
+
+    try {
+      const response = await fetch(`http://34.196.172.99/api.php?item=${encodeURIComponent(food)}`);
+      const data = await response.json();
+
+      if (data.items && data.items.length > 0) {
+        const first = data.items[0];
+        output.textContent = `Found report: ${first.item} was "${first.report}" on ${first.date}`;
+      } else {
+        output.textContent = `No results found for "${food}".`;
+      }
+    } catch (error) {
+      output.textContent = "There was an error getting the data.";
+      console.error(error);
+    }
+  });
+</script>
+
+
+</body>
+</html>
